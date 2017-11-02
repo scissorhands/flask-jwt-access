@@ -99,3 +99,12 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#virtualenv
+Include/*
+Scripts/*
+pip-selfcheck.json
+tcl/*
+
+#config files
+config/database.py
