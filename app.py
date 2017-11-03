@@ -4,7 +4,7 @@ from helpers.util import build_dsn
 from config.database import config as dbconfig
 
 # Resources
-from resources.users import User,UserAuth
+from resources.users import User,Register,Auth,ProtectedAccess
 from resources.home import Home
 
 app = Flask(__name__)
@@ -23,7 +23,9 @@ def create_tales():
 	db.create_all()
 
 api.add_resource(Home, '/')
-api.add_resource(UserAuth, '/auth')
+api.add_resource(Register, '/users/register')
+api.add_resource(Auth, '/auth')
+api.add_resource(ProtectedAccess, '/users/access')
 
 if __name__ == '__main__':
 	from db import db

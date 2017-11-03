@@ -108,3 +108,4 @@ tcl/*
 
 #config files
 config/database.py
+config/jwt.py
