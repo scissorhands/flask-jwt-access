@@ -1,7 +1,8 @@
 import os
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, request
-if os.environ.get('DATABASE_URL') is None:
+from config.app import config as appconfig
+if appconfig['ENV'] == 'development':
 	from helpers.util import build_dsn
 	from config.database import config as dbconfig
 

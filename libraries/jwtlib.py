@@ -1,11 +1,18 @@
+from config.app import config as appconfig, os
 import jwt
 from flask_restful import request
-from config.jwt import config as jwtconf
+
+if( appconfig['ENV'] == 'development' ):
+	from config.jwt import config as jwtconf
 
 class JWTLib():
 	def __init__(self):
-		self.secret = jwtconf['secret']
-		self.algorythm = jwtconf['algorythm']
+		if( appconfig['ENV'] == 'development' ):
+			self.secret = jwtconf['secret']
+			self.algorythm = jwtconf['algorythm']
+		else:
+			self.secret = os.environ.get('JWT_SECRET')
+			self.algorythm = os.environ.get('JWT_ALGORYTHM')
 
 	def encrypt(self, payload):
 		jwtoken = jwt.encode(
