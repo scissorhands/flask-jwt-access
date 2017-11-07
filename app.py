@@ -25,9 +25,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'MySecret'
 api = Api(app)
 
-@app.before_first_request
-def create_tales():
-	db.create_all()
+# @app.before_first_request
+# def create_tales():
+# 	db.create_all()
 
 api.add_resource(Home, '/')
 api.add_resource(Register, '/users/register')
