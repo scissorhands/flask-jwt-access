@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, request
-if os.environ.get('DATABASE') is None:
+if os.environ.get('DATABASE_URL') is None:
 	from helpers.util import build_dsn
 	from config.database import config as dbconfig
 
