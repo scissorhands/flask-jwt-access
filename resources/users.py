@@ -1,9 +1,7 @@
 from flask_restful import Resource, reqparse, request
 from models.users import User
-import jwt
-import json
-from config.jwt import config as jwtconf
-
+from libraries.jwtlib import JWTLib
+jwtlib = JWTLib()
 
 class Register(Resource):
 	parser = reqparse.RequestParser(bundle_errors=True)
@@ -59,22 +57,35 @@ class Auth(Resource):
 		if user:
 			if user.check_password(data['password']):
 				payload = user.to_json()
-				jwtoken = jwt.encode(payload, jwtconf['secret'], algorithm=jwtconf['algorythm'])
-				return {"access_token": jwtoken.decode('utf-8')}, 200
+				token = jwtlib.encrypt(payload)
+				return {"access_token": token}, 200
 			else:
 				return {"message": "Invalid password"}, 401
 		else:
 			return {"message": "User does not exist"}, 401
 
 class ProtectedAccess(Resource):
+	parser = reqparse.RequestParser()
+	parser.add_argument(
+		'additional_content', 
+		type=str,
+		required=True, 
+		help='additional_content field is required'
+	)
+
 	def get(self):
-		auth_header = request.headers.get('Authorization')
-		if auth_header is not None and 'JWT ' in auth_header:
-			try:
-				jwtoken = auth_header.split()
-				decoded = jwt.decode(jwtoken[1], jwtconf['secret'], algorithms=[jwtconf['algorythm']])
-			except jwt.exceptions.DecodeError as e:
-				return {"message": "Invalid signature" }, 400
-			return {"user": decoded},200
-		else:
-			return {"message": "Access denied"}, 401
+		try:
+			payload = jwtlib.decrypt_auth()
+			return {"user": payload}, 200
+		except Exception as e:
+			return {"message": str(e)}, 401
+
+	def post(self):
+		data = ProtectedAccess.parser.parse_args()
+		try:
+			payload = jwtlib.decrypt_auth()
+			payload['additional_content'] = data['additional_content']
+			token = jwtlib.encrypt(payload)
+			return {"access_token": token}, 200
+		except Exception as e:
+			return {"message": str(e)}, 401
