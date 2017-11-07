@@ -7,7 +7,7 @@ if( appconfig['ENV'] == 'development' ):
 
 class JWTLib():
 	def __init__(self):
-		if( appconfig['ENV'] == 'development' ):
+		if appconfig['ENV'] == 'development':
 			self.secret = jwtconf['secret']
 			self.algorythm = jwtconf['algorythm']
 		else:

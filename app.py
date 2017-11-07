@@ -11,14 +11,16 @@ from resources.users import User,Register,Auth,ProtectedAccess
 from resources.home import Home
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 
-	build_dsn(
+if appconfig['ENV'] == 'development':
+	app.config['SQLALCHEMY_DATABASE_URI'] = build_dsn(
 		dbconfig['host'],
 		dbconfig['user'],
 		dbconfig['password'],
 		dbconfig['database']
 	)
-)
+else:
+	app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+	
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'MySecret'
 api = Api(app)
